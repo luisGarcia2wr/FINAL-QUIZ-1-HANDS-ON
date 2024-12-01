@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FINAL QUIZ 1 HANDS-ON</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffe4f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+    }
+    h2 {
+      color: #ff4d94;
+    }
+    input, button {
+      width: 80%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #ff4d94;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #ff1a75;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="login-page">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button id="login-button">Login</button>
+  </div>
+
+  <div class="container hidden" id="protected-page">
+    <h2>Welcome!</h2>
+    <input type="text" id="user-input" placeholder="Enter text">
+    <button id="submit-button">Submit</button>
+    <div id="output"></div>
+    <button id="logout-button">Logout</button>
+  </div>
+
+  <script>
+    const correctUsername = "luis";
+    const correctPassword = "garcia";
+
+    const loginPage = document.getElementById("login-page");
+    const protectedPage = document.getElementById("protected-page");
+    const loginButton = document.getElementById("login-button");
+    const submitButton = document.getElementById("submit-button");
+    const logoutButton = document.getElementById("logout-button");
+    const output = document.getElementById("output");
+
+
+    const strings = JSON.parse(localStorage.getItem("strings")) || [];
+
+    if (sessionStorage.getItem("isLoggedIn") === "true") {
+      showProtectedPage();
+    }
+
+ 
+    function renderStrings() {
+      output.innerHTML = strings.map(str => `<p>${str}</p>`).join("");
+    }
+
+    loginButton.addEventListener("click", () => {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (username === correctUsername && password === correctPassword) {
+        sessionStorage.setItem("isLoggedIn", "true");
+        showProtectedPage();
+      } else {
+        alert("Invalid username or password!");
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+      }
+    });
+
+    function showProtectedPage() {
+      loginPage.classList.add("hidden");
+      protectedPage.classList.remove("hidden");
+      renderStrings();
+    }
+
+    submitButton.addEventListener("click", () => {
+      const userInput = document.getElementById("user-input").value;
+      if (userInput) {
+        strings.push(userInput);
+        localStorage.setItem("strings", JSON.stringify(strings));
+        renderStrings();
+        document.getElementById("user-input").value = "";
+      }
+    });
+
+    logoutButton.addEventListener("click", () => {
+      sessionStorage.clear(); 
+      loginPage.classList.remove("hidden");
+      protectedPage.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>
